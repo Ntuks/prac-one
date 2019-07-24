@@ -56,21 +56,32 @@ def main():
 
 """ THIS FUNCTION LIGHTS UP THE LEDS IN A BINARY COUNTING INCREMENTING FASHION """
 def binaryIncrement()
-    GPIO.output(LEDS[0], GPIO.input(BTNS[0]))
-    sleep(SLEEPTIME)
-    GPIO.output(LEDS[0], False)
-    GPIO.output(LEDS[1], GPIO.input(BTNS[0]))
-    sleep(SLEEPTIME)
-    GPIO.output(LEDS[0], GPIO.input(BTNS[0]))
-    sleep(SLEEPTIME)
-    GPIO.output(LEDS[0], False)
-    GPIO.output(LEDS[1], False)
+    # Starting off with all the LEDs ON == 001
     GPIO.output(LEDS[2], GPIO.input(BTNS[0]))
     sleep(SLEEPTIME)
+
+    # Switching off LED2 & Switching on LED1 == 010
+    GPIO.output(LEDS[2], False)
+    GPIO.output(LEDS[1], GPIO.input(BTNS[0]))
+    sleep(SLEEPTIME)
+
+    # Switching on LED2 again == 011
+    GPIO.output(LEDS[2], GPIO.input(BTNS[0]))
+    sleep(SLEEPTIME)
+
+    # Switching off LED1 & LED2 again & Switching on LED0 == 100
+    GPIO.output(LEDS[2], False)
+    GPIO.output(LEDS[1], False)
     GPIO.output(LEDS[0], GPIO.input(BTNS[0]))
     sleep(SLEEPTIME)
+
+    # Switching on LED2 == 101
+    GPIO.output(LEDS[2], GPIO.input(BTNS[0]))
     sleep(SLEEPTIME)
+
+    # Starting on LED1 == 111
     GPIO.output(LEDS[1], GPIO.input(BTNS[0]))
+    sleep(SLEEPTIME)
 
 """ THIS FUNCTION LIGHTS UP THE LEDS IN A BINARY COUNTING DECREMENTING FASHION """
 def binaryDecrement()
