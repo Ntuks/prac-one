@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
         # CLEARING WHAT THE PINS HAVE BEEN PROGRAMMED
         GPIO.cleanup()
-    except e:
+    except  :
         GPIO.cleanup()
         print("Some other error occurred")
         print(e.message)

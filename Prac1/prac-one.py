@@ -12,18 +12,14 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 # VARIABLES TO MAKE THE CODE CLEANER?
-SLEEPTIME = 1
+SLEEPTIME = 2
 
 # GPIO PINS FOR LED AND BUTTON
 LEDS = [7, 11, 13]
 BTNS = [16,18]
-# LED1 = 7
-# LED2 = 11
-# LED3 = 13
-# BTN1 = 16
-# BTN2 = 18
 
 def init():
+    print("Initializing")
     # Setting up the mode of the numbering system
     GPIO.setmode(GPIO.BOARD)
 
@@ -32,30 +28,30 @@ def init():
         GPIO.setup(LED, GPIO.OUT)
         GPIO.output(LED, False)
 
-    # GPIO.setup(LED, GPIO.OUT)
-    # GPIO.output(LED, False)
-    # GPIO.setup(LED, GPIO.OUT)
-    # GPIO.output(LED, False)
-
-    # Setting up the input pin the BUTTON &
-    # Using the Broadcom chip's pull-up resistor - so that we don't physically configure it in our breadboard
+    # Setting up the input pin the BUTTON & Using the Broadcom chip's pull-up resistor -
+    # so that we don't physically configure it in our breadboard
     # Specifially using the pull-up resistor not the pull-down
     GPIO.setup(BTNS[0], GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(BTNS[1], GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-# Logic that you write
-def main():
-    print("About to run the code")
-    init()
+    print("adding event listeners")
     GPIO.add_event_detect(BTNS[0], GPIO.RISING)  # add rising edge detection on a BTNS
     GPIO.add_event_detect(BTNS[1], GPIO.RISING)  # add rising edge detection on a BTNS
-    if GPIO.event_detected(BTNS[1]):
+
+    print("Initialization Complete")
+
+# Logic that you write
+def main():
+    print("Waiting For Button to be pressed")
+    if GPIO.event_detected(BTNS[0]):
+        print("Binary Increment")
         binaryIncrement()
     elif GPIO.event_detected(BTNS[1]):
+        print("Binary Decrement")
         binaryDecrement()
 
 """ THIS FUNCTION LIGHTS UP THE LEDS IN A BINARY COUNTING INCREMENTING FASHION """
-def binaryIncrement()
+def binaryIncrement():
     # Starting off with all the LEDs ON == 001
     GPIO.output(LEDS[2], GPIO.input(BTNS[0]))
     sleep(SLEEPTIME)
@@ -79,12 +75,21 @@ def binaryIncrement()
     GPIO.output(LEDS[2], GPIO.input(BTNS[0]))
     sleep(SLEEPTIME)
 
+    # Switching on LED2 == 110
+    GPIO.output(LED, False)
+    GPIO.output(LEDS[1], GPIO.input(BTNS[0]))
+    sleep(SLEEPTIME)
+
     # Starting on LED1 == 111
     GPIO.output(LEDS[1], GPIO.input(BTNS[0]))
     sleep(SLEEPTIME)
 
+    for LED in LEDS:
+        GPIO.output(LED, False)
+    sleep(SLEEPTIME)
+
 """ THIS FUNCTION LIGHTS UP THE LEDS IN A BINARY COUNTING DECREMENTING FASHION """
-def binaryDecrement()
+def binaryDecrement():
     # Starting off with all the LEDs ON == 111
     for LED in LEDS:
         GPIO.output(LED, GPIO.input(BTNS[1]))
@@ -109,18 +114,20 @@ def binaryDecrement()
     GPIO.output(LEDS[0], False)
     sleep(SLEEPTIME)
 
-    # Switching off LED2 agaain == 010
-    GPIO.output(LEDS[0], GPIO.input(BTNS[1]))
+    # Switching off LED1 & Switching on LED2 back == 010
+    GPIO.output(LEDS[2], False)
     sleep(SLEEPTIME)
 
-    # Switching off LED1 & Switching on LED2 back == 001
-    GPIO.output(LEDS[1], GPIO.input(BTNS[1]))
+    # Switching off LED2 agaain == 001
+    GPIO.output(LEDS[1], False)
+    GPIO.output(LEDS[2], GPIO.input(BTNS[1]))
     sleep(SLEEPTIME)
 
-# Only run the functions if 
+# Only run the functions if
 if __name__ == "__main__":
     # Make sure the GPIO is stopped correctly
     try:
+        init()
         while True:
             main()
     except KeyboardInterrupt:
@@ -131,7 +138,6 @@ if __name__ == "__main__":
 
         # CLEARING WHAT THE PINS HAVE BEEN PROGRAMMED
         GPIO.cleanup()
-    except e:
+    except:
         GPIO.cleanup()
         print("Some other error occurred")
-        print(e.message)
