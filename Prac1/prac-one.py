@@ -11,7 +11,7 @@ Description: Testing how to switch an LED on with a button that is configured by
 import RPi.GPIO as GPIO
 from time import sleep
 
-# VARIABLES TO MAKE THE CODE CLEANER?
+# Sleep time for the buttons to wait long enough
 SLEEPTIME = 2
 
 # GPIO PINS FOR LED AND BUTTON
@@ -19,7 +19,7 @@ LEDS = [7, 11, 13]
 BTNS = [16,18]
 
 def init():
-    print("Initializing")
+    print("Initializing...")
     # Setting up the mode of the numbering system
     GPIO.setmode(GPIO.BOARD)
 
@@ -29,16 +29,13 @@ def init():
         GPIO.output(LED, False)
 
     # Setting up the input pin the BUTTON & Using the Broadcom chip's pull-up resistor -
-    # so that we don't physically configure it in our breadboard
-    # Specifially using the pull-up resistor not the pull-down
+    # so that we don't physically configure it in our breadboard - these are for debouncing
     GPIO.setup(BTNS[0], GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(BTNS[1], GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    print("adding event listeners")
     GPIO.add_event_detect(BTNS[0], GPIO.RISING)  # add rising edge detection on a BTNS
     GPIO.add_event_detect(BTNS[1], GPIO.RISING)  # add rising edge detection on a BTNS
 
-    print("Initialization Complete")
 
 # Logic that you write
 def main():
@@ -76,12 +73,12 @@ def binaryIncrement():
     sleep(SLEEPTIME)
 
     # Switching on LED2 == 110
-    GPIO.output(LED, False)
+    GPIO.output(LEDS[2], False)
     GPIO.output(LEDS[1], GPIO.input(BTNS[0]))
     sleep(SLEEPTIME)
 
     # Starting on LED1 == 111
-    GPIO.output(LEDS[1], GPIO.input(BTNS[0]))
+    GPIO.output(LEDS[2], GPIO.input(BTNS[0]))
     sleep(SLEEPTIME)
 
     for LED in LEDS:
@@ -122,6 +119,12 @@ def binaryDecrement():
     GPIO.output(LEDS[1], False)
     GPIO.output(LEDS[2], GPIO.input(BTNS[1]))
     sleep(SLEEPTIME)
+
+    # Starting off with all the LEDs ON == 111
+    for LED in LEDS:
+        GPIO.output(LED, False)
+    sleep(SLEEPTIME)
+
 
 # Only run the functions if
 if __name__ == "__main__":
