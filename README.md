@@ -1,4 +1,4 @@
-# EEE3096S
+# EEE3095S
 ## Prac 1
 This practical is for getting comfortable interfacing with the Raspberry Pi and GPIO basics, as well as exposure to git.
 
